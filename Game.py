@@ -2,14 +2,15 @@ import pygame
 
 import Level0
 import Time
-import time
+from EventsStateService import EventStateService
 from Utility import Tools
 
 
 class Game:
     current_level = 0
-    levels = [Level0.Level0()]
+    levels = []
     time = Time.Time()
+    event_state_service: EventStateService = EventStateService()
 
     def __init__(self):
         pygame.init()
@@ -18,6 +19,7 @@ class Game:
         self.WIDTH = int(config['window']['WIDTH'])
         self.FPS = int(config['window']['fps'])
         self.window = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
+        self.levels.append(Level0.Level0())
         pygame.display.set_caption('TEDE')
         self.running = True
 
@@ -33,6 +35,8 @@ class Game:
         pygame.quit()
 
     def check_events(self):
-        for event in pygame.event.get():
+        events = pygame.event.get()
+        for event in events:
             if event.type == pygame.QUIT:
                 self.running = False
+            self.event_state_service.set_events(events)

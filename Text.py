@@ -1,7 +1,5 @@
 import pygame
 
-pygame.init()
-
 
 class Text:
 
@@ -21,5 +19,5 @@ class Text:
         return self
 
     def draw(self, window):
-        window.blit(self.my_font.render(self.text, 0, self.color), self.position)
+        window.blit(self.my_font.render(self.text, True, self.color), self.position)
 

@@ -1,4 +1,7 @@
 import time
+from typing import List
+
+import pygame
 
 from Bullet import Bullet
 from Sprite import Sprite
@@ -6,6 +9,21 @@ from Utility import Tools
 
 
 class Tower:
+
+    sprite: Sprite
+    circle_range: pygame.Surface
+
+    damage: int
+    texture: str
+    shot_range: int
+    cooldown: float
+    position: (int, int)
+    kills: int
+    is_rotatable: bool
+    bullet_speed: int
+    bullets: List[Bullet]
+    last_shot_time: float
+
     def __init__(self):
         self.bullets = []
         self.active = False
@@ -17,7 +35,7 @@ class Tower:
         return self.cooldown
 
     def get_range(self):
-        return self.range
+        return self.shot_range
 
     def get_kills(self):
         return self.kills
@@ -37,11 +55,11 @@ class Tower:
                 distance = enemy.get_distance_travelled()
                 finded = True
 
-        if finded and time.perf_counter() - self.time_last_shoot > self.cooldown:
-            self.time_last_shoot = time.perf_counter()
+        if finded and time.perf_counter() - self.last_shot_time > self.cooldown:
+            self.last_shot_time = time.perf_counter()
             self.shoot_to_target(target)
 
-        if finded and self.rotatable:
+        if finded and self.is_rotatable:
             self.sprite.rotate_to_point(target.get_sprite().get_position())
 
         i = 0
@@ -50,7 +68,7 @@ class Tower:
             if self.hitted_enemy(self.bullets[i], enemies):
                 self.bullets.pop(i)
                 continue
-            if Tools.get_length_point_to_point(bullet_position, self.sprite.get_position()) > self.range:
+            if Tools.get_length_point_to_point(bullet_position, self.sprite.get_position()) > self.shot_range:
                 self.bullets.pop(i)
                 continue
             self.bullets[i].update()
@@ -61,16 +79,16 @@ class Tower:
         bounds = enemy.get_sprite().get_global_bounds()
 
         # left up corner
-        if Tools.get_length_point_to_point((bounds[0], bounds[1]), self.position) <= self.range:
+        if Tools.get_length_point_to_point((bounds[0], bounds[1]), self.position) <= self.shot_range:
             return True
         # right up
-        if Tools.get_length_point_to_point((bounds[0] + bounds[2], bounds[1]), self.position) <= self.range:
+        if Tools.get_length_point_to_point((bounds[0] + bounds[2], bounds[1]), self.position) <= self.shot_range:
             return True
         # right down
-        if Tools.get_length_point_to_point((bounds[0] + bounds[2], bounds[1] + bounds[3]), self.position) <= self.range:
+        if Tools.get_length_point_to_point((bounds[0] + bounds[2], bounds[1] + bounds[3]), self.position) <= self.shot_range:
             return True
         # left down
-        if Tools.get_length_point_to_point((bounds[0], bounds[1] + bounds[3]), self.position) <= self.range:
+        if Tools.get_length_point_to_point((bounds[0], bounds[1] + bounds[3]), self.position) <= self.shot_range:
             return True
         return False
 
@@ -97,7 +115,7 @@ class Tower:
     def draw(self, window):
         if self.active:
             window.blit(self.circle_range,
-                        (self.sprite.get_position()[0] - self.range, self.sprite.get_position()[1] - self.range))
+                        (self.sprite.get_position()[0] - self.shot_range, self.sprite.get_position()[1] - self.shot_range))
         self.sprite.draw(window)
 
         for bullet in self.bullets:

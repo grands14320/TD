@@ -21,6 +21,11 @@ class Sprite:
         self.texture = pygame.image.load(path)
         self.sprite = self.texture
 
+    def set_transparent_texture(self, texture_path):
+        self.texture = pygame.image.load(texture_path).convert()
+        self.texture.set_colorkey((0, 0, 0))
+        self.sprite = self.texture.convert()
+
     def get_position(self):
         return self.position
 

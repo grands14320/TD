@@ -1,8 +1,7 @@
 import configparser
-import os
-import math
-import sys
 import json
+import math
+import os
 
 
 class Tools:
@@ -12,8 +11,8 @@ class Tools:
 
         config = """
             [window] \n
-            width=600 \n
-            height=800 \n
+            width=1000 \n
+            height=600 \n
             fps = 30 \n   
             """
 
@@ -46,10 +45,10 @@ class Tools:
 
     @staticmethod
     def get_single_wave():
-        lol = Tools.get_waves_dict()
-        for raz, dwa in lol.items():
-            print(raz, dwa)
-            yield raz, dwa
+        wave = Tools.get_waves_dict()
+        for wave_name, value in wave.items():
+            print(wave_name, value)
+            yield wave_name, value
 
 
 

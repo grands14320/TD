@@ -1,41 +1,50 @@
+from typing import List
+
 import pygame
 
 import Game
+import Sprite
+from UnitVectors import UnitVectors
 from Utility import Tools
 
 
 class Enemy:
-    class Direction:
-        UP = [0, -1]
-        DOWN = [0, 1]
-        LEFT = [-1, 0]
-        RIGHT = [1, 0]
+    distance_travelled: int = 0
+    sprite: Sprite.Sprite = None
+    max_health: int
+    health: int
+    speed: int
+    next_move: UnitVectors
+    previous_move: UnitVectors
+    gold_dropped: int
+    is_rotating: bool
 
-    def __init__(self):
-        self.distance_travelled = 0
+    def __init__(self, sprite: Sprite.Sprite):
+        self.sprite = sprite
 
     def __del__(self):
         print("dyntka")
 
-    def get_distance_travelled(self):
+    def get_distance_travelled(self) -> float:
         return self.distance_travelled
 
-    def get_sprite(self):
+    def get_sprite(self) -> Sprite.Sprite:
         return self.sprite
 
-    def get_health(self):
+    def get_health(self) -> int:
         return self.health
 
-    def get_gold_dropped(self):
+    def get_gold_dropped(self) -> int:
         return self.gold_dropped
 
-    def move(self, map, map_size):
-        size_of_tile = Game.Game.levels[Game.Game.current_level].size_of_tile
+    def move(self, game_map: List[List[int]], map_size: (int, int)) -> None:
+        size_of_tile: (int, int) = Game.Game.levels[Game.Game.current_level].size_of_tile
 
-        x = int(self.sprite.get_position()[0] / size_of_tile[0])
-        y = int(self.sprite.get_position()[1] / size_of_tile[1])
+        x: int = int(self.sprite.get_position()[0] / size_of_tile[0])
+        y: int = int(self.sprite.get_position()[1] / size_of_tile[1])
 
-        moveOffset = [self.next_move[0] * self.speed, self.next_move[1] * self.speed]
+        move_offset: list[int] = [self.next_move[0] * self.speed,
+                                  self.next_move[1] * self.speed]
 
         if not self.is_on_center_tile(x, y, map_size):
 
@@ -47,62 +56,64 @@ class Enemy:
 
             length_from_tile = Tools.get_length_point_to_point(position_of_tile, self.sprite.get_position())
 
-            if abs(moveOffset[0]) > abs(length_from_tile) or abs(moveOffset[1]) > abs(length_from_tile):
+            if abs(move_offset[0]) > abs(length_from_tile) or abs(move_offset[1]) > abs(length_from_tile):
 
                 if not self.tile_is_behind(position_of_tile):
                     self.sprite.move(length_from_tile_vector)
                     self.distance_travelled += abs(length_from_tile_vector[0]) + abs(length_from_tile_vector[1])
-                    self.set_direction(map, map_size)
-                    moveOffset = [self.next_move[0] * self.speed, self.next_move[1] * self.speed]
+                    self.set_direction(game_map, map_size)
+                    move_offset = [self.next_move[0] * self.speed, self.next_move[1] * self.speed]
 
-                    if moveOffset[0] != 0:
-                        if moveOffset[0] > 0:
-                            moveOffset[0] -= length_from_tile
+                    if move_offset[0] != 0:
+                        if move_offset[0] > 0:
+                            move_offset[0] -= length_from_tile
                         else:
-                            moveOffset[0] += length_from_tile
-                    elif moveOffset[1] != 0:
-                        if moveOffset[1] > 0:
-                            moveOffset[1] -= length_from_tile
+                            move_offset[0] += length_from_tile
+                    elif move_offset[1] != 0:
+                        if move_offset[1] > 0:
+                            move_offset[1] -= length_from_tile
                         else:
-                            moveOffset[1] += length_from_tile
+                            move_offset[1] += length_from_tile
 
         else:
-            self.set_direction(map, map_size)
-            moveOffset = [self.next_move[0] * self.speed, self.next_move[1] * self.speed]
+            self.set_direction(game_map, map_size)
+            move_offset = [self.next_move[0] * self.speed, self.next_move[1] * self.speed]
 
-        moveOffset = [moveOffset[0], moveOffset[1] ]
-        self.sprite.move(moveOffset)
-        self.distance_travelled += abs(moveOffset[0]) + abs(moveOffset[1])
-        # self.sprite.rotate(20)
+        move_offset = [move_offset[0], move_offset[1]]
+        self.sprite.move(move_offset)
+        self.distance_travelled += abs(move_offset[0]) + abs(move_offset[1])
+        if self.is_rotating:
+            self.sprite.rotate(2)
 
-    def set_direction(self, map, map_size):
+
+    def set_direction(self, game_map: List[List[int]], map_size: (int, int)) -> None:
         size_of_tile = Game.Game.levels[Game.Game.current_level].size_of_tile
 
         x = int(self.sprite.get_position()[0] / size_of_tile[0])
         y = int(self.sprite.get_position()[1] / size_of_tile[1])
 
         if x - 1 < 0 or x + 1 > map_size[0] or y - 1 < 0 or y + 1 > map_size[1]:
-            return True
+            return
 
-        if map[y + 1][x] == '3' and self.previous_move != Enemy.Direction.UP:  # down
-            self.next_move = Enemy.Direction.DOWN
-            self.previous_move = Enemy.Direction.DOWN
-            return True
+        if game_map[y + 1][x] == '3' and self.previous_move != UnitVectors.UP:  # down
+            self.next_move = UnitVectors.DOWN
+            self.previous_move = UnitVectors.DOWN
+            return
 
-        if map[y - 1][x] == '3' and self.previous_move != Enemy.Direction.DOWN:  # up
-            self.next_move = Enemy.Direction.UP
-            self.previous_move = Enemy.Direction.UP
-            return True
+        if game_map[y - 1][x] == '3' and self.previous_move != UnitVectors.DOWN:  # up
+            self.next_move = UnitVectors.UP
+            self.previous_move = UnitVectors.UP
+            return
 
-        if map[y][x + 1] == '3' and self.previous_move != Enemy.Direction.LEFT:  # right
-            self.next_move = Enemy.Direction.RIGHT
-            self.previous_move = Enemy.Direction.RIGHT
-            return True
+        if game_map[y][x + 1] == '3' and self.previous_move != UnitVectors.LEFT:  # right
+            self.next_move = UnitVectors.RIGHT
+            self.previous_move = UnitVectors.RIGHT
+            return
 
-        if map[y][x - 1] == '3' and self.previous_move != Enemy.Direction.RIGHT:  # left
-            self.next_move = Enemy.Direction.LEFT
-            self.previous_move = Enemy.Direction.LEFT
-            return True
+        if game_map[y][x - 1] == '3' and self.previous_move != UnitVectors.RIGHT:  # left
+            self.next_move = UnitVectors.LEFT
+            self.previous_move = UnitVectors.LEFT
+            return
 
     def is_on_center_tile(self, x, y, map_size):
         size_of_tile = Game.Game.levels[Game.Game.current_level].size_of_tile
@@ -125,13 +136,13 @@ class Enemy:
         return sprite_index_x == finish_index_x and sprite_index_y == finish_index_y
 
     def tile_is_behind(self, position_of_tile):
-        if position_of_tile[1] > self.sprite.get_position()[1] and self.next_move == Enemy.Direction.UP:
+        if position_of_tile[1] > self.sprite.get_position()[1] and self.next_move == UnitVectors.UP:
             return True
-        if position_of_tile[1] < self.sprite.get_position()[1] and self.next_move == Enemy.Direction.DOWN:
+        if position_of_tile[1] < self.sprite.get_position()[1] and self.next_move == UnitVectors.DOWN:
             return True
-        if position_of_tile[0] > self.sprite.get_position()[0] and self.next_move == Enemy.Direction.LEFT:
+        if position_of_tile[0] > self.sprite.get_position()[0] and self.next_move == UnitVectors.LEFT:
             return True
-        if position_of_tile[0] < self.sprite.get_position()[0] and self.next_move == Enemy.Direction.RIGHT:
+        if position_of_tile[0] < self.sprite.get_position()[0] and self.next_move == UnitVectors.RIGHT:
             return True
         return False
 
