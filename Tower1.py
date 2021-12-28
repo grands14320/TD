@@ -7,14 +7,15 @@ import Tower
 
 class Tower1(Tower.Tower):
 
-    shot_range = 100
+    shot_range = 80
     bullet_speed = 50
     cooldown = 0.5
-    damage = 2
+    damage = 3
     last_shot_time = 0
     kills = 0
     is_rotatable = False
     texture = "Towers/Tower0.png"
+    price = 20
 
     def __init__(self, position):
         super().__init__()

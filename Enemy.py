@@ -85,7 +85,6 @@ class Enemy:
         if self.is_rotating:
             self.sprite.rotate(2)
 
-
     def set_direction(self, game_map: List[List[int]], map_size: (int, int)) -> None:
         size_of_tile = Game.Game.levels[Game.Game.current_level].size_of_tile
 

@@ -3,6 +3,7 @@ import pygame
 import Level0
 import Time
 from EventsStateService import EventStateService
+from GameOver import GameOver
 from Utility import Tools
 
 
@@ -22,13 +23,16 @@ class Game:
         self.levels.append(Level0.Level0())
         pygame.display.set_caption('TEDE')
         self.running = True
+        self.game_over = GameOver()
 
     def run(self):
         while self.running:
             clock = pygame.time.Clock()
             clock.tick(self.FPS)
-            self.window.fill((0, 0, 0))
-            self.levels[self.current_level].update(self.window)
+            if not self.levels[self.current_level].is_game_over:
+                self.levels[self.current_level].update(self.window)
+            else:
+                self.game_over.draw(self.window)
             self.time.update()
             pygame.display.flip()
             self.check_events()

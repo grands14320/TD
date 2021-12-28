@@ -10,6 +10,8 @@ import GUI
 import Sprite
 import Tower
 from DetailsStateService import DetailsStateService
+from Enemy2 import Enemy2
+from Enemy3 import Enemy3
 from EventsStateService import EventStateService
 from TowersStateService import TowersStateService
 from PlayerProgressStateService import PlayerProgressStateService
@@ -17,9 +19,12 @@ from Utility import Tools
 
 
 class Level:
+
+    is_game_over = False
     map: list[list[str]]
     map_size: (int, int)
     tiles: [Sprite.Sprite]
+    enemies_not_fetched_yet: bool = True
     enemy_start_position: (int, int)
     enemy_finish_position: (int, int)
 
@@ -40,9 +45,8 @@ class Level:
 
     def __init__(self, game_map: list[list[str]], tiles: [Sprite.Sprite]):
         self.map = game_map
-        self.wave = self.get_wave()
         self.tiles = tiles
-        self.enemies_type = [Enemy0.Enemy0((125, 625)), Enemy1.Enemy1((125, 625))]
+        self.enemies_type = [Enemy0.Enemy0((125, 625)), Enemy1.Enemy1((125, 625)), Enemy2((125, 625)), Enemy3((125, 625))]
         self.gui = GUI.GUI()
 
     def get_tile(self, point) -> pygame.Surface:
@@ -58,32 +62,39 @@ class Level:
         return map_list
 
     def update(self, window) -> None:
-        i = 0
-        while i < len(self.enemies):
-            self.enemies[i].health_bar(window)
-            if self.enemies[i].get_health() <= 0:
-                self.player_progress_state_service.add_money(self.enemies[i].get_gold_dropped())
-                self.enemies.pop(i)
-                if len(self.enemies) == 0:  # narazie jesli brak enemy,pozniej jezeli user wcisnie guzik czy cos
-                    self.wave = self.get_wave()
-                continue
-            if self.enemies[i].arrived_to_finish(self.enemy_finish_position):
-                self.player_progress_state_service.subtract_health(10)
-                self.enemies.pop(i)
-                if len(self.enemies) == 0:  # narazie jesli brak enemy,pozniej jezeli user wcisnie guzik czy cos
-                    self.wave = self.get_wave()
-                continue
-            self.enemies[i].move(self.map, self.map_size)
-            i += 1
-
-        self.update_wave()
         self.draw_map(window)
 
         self.gui.update(self.towers)
         self.gui.draw(window)
 
-        for enemy in self.enemies:
-            enemy.draw(window)
+        if self.player_progress_state_service.get_is_wave_ongoing():
+            # get wave if there are no enemies.
+            if self.enemies_not_fetched_yet:
+                self.enemies_not_fetched_yet = False
+                self.wave = self.get_wave()
+
+            # push enemies to list from wave.
+            self.update_wave()
+
+            for enemy in self.enemies:
+                if enemy.get_health() <= 0:
+                    self.player_progress_state_service.add_money(enemy.get_gold_dropped())
+                    self.enemies.remove(enemy)
+                    continue
+                if enemy.arrived_to_finish(self.enemy_finish_position):
+                    self.player_progress_state_service.subtract_health(10)
+                    self.enemies.remove(enemy)
+                    continue
+                enemy.move(self.map, self.map_size)
+                enemy.draw(window)
+
+            # stop the wave if there are no spawned enemies left and there are no enemies left to spawn.
+            if len(self.enemies) == 0 and not self.wave:
+                print('Wave: [' + self.player_progress_state_service.get_current_wave_name() + '] finished')
+                self.player_progress_state_service.set_is_wave_ongoing(False)
+                self.enemies_not_fetched_yet = True
+                self.player_progress_state_service.set_current_wave_name('Idle')
+
 
         for tower in self.towers:
             tower.update(self.enemies)
@@ -95,7 +106,8 @@ class Level:
             self.game_over()
 
     def game_over(self):
-        pass
+        self.is_game_over = True
+        print('game over')
 
     def check_click_events(self):
         if self.towers_state_service.get_clicked_structure() is not None:
@@ -112,6 +124,7 @@ class Level:
                         new_tower: Tower = clicked_tower_type((tile_x * self.size_of_tile[0] + 25,
                                                               tile_y * self.size_of_tile[1] + 25))
                         self.towers.append(new_tower)
+                        self.player_progress_state_service.subtract_money(new_tower.get_price())
 
                         self.towers_state_service.set_clicked_structure(None)
                 # check right mouse button click
@@ -140,6 +153,7 @@ class Level:
                 window.blit(self.get_tile(int(self.map[i][j])), (j * self.size_of_tile[0], i * self.size_of_tile[1]))
 
     def get_wave(self) -> {str, str}:
+        print('getting wave')
         self.time_start_lvl = time.perf_counter()
         for wave, enemies in self.waves:
             self.player_progress_state_service.set_current_wave_name(wave)

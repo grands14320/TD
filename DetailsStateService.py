@@ -16,7 +16,7 @@ class DetailsStateService(metaclass=SingletonMeta):
     def set_active_tower(self, tower: Tower.Tower):
         self.__active_tower = tower
 
-    def get_active_tower(self):
+    def get_active_tower(self) -> Tower.Tower:
         return self.__active_tower
 
 
