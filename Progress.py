@@ -1,7 +1,7 @@
 import Sprite
 import Text
 from PlayerProgressStateService import PlayerProgressStateService
-from StartStopButton import StartStopButton
+from buttons.StartStopButton import StartStopButton
 
 
 class Progress:

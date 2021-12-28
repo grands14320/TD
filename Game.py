@@ -1,17 +1,22 @@
 import pygame
 
+import GameOverDefeat
+import GameOverSuccess
 import Level0
 import Time
 from EventsStateService import EventStateService
-from GameOver import GameOver
+from PlayerProgressStateService import PlayerProgressStateService
 from Utility import Tools
+from enums.CurrentScreen import CurrentScreen
 
 
 class Game:
+
     current_level = 0
     levels = []
     time = Time.Time()
     event_state_service: EventStateService = EventStateService()
+    player_progress_state_service: PlayerProgressStateService = PlayerProgressStateService()
 
     def __init__(self):
         pygame.init()
@@ -20,19 +25,17 @@ class Game:
         self.WIDTH = int(config['window']['WIDTH'])
         self.FPS = int(config['window']['fps'])
         self.window = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
-        self.levels.append(Level0.Level0())
+        self.__initialize_levels()
         pygame.display.set_caption('TEDE')
         self.running = True
-        self.game_over = GameOver()
+        self.game_over_defeat: GameOverDefeat.GameOverDefeat = GameOverDefeat.GameOverDefeat()
+        self.game_over_success: GameOverSuccess.GameOver = GameOverSuccess.GameOver()
 
     def run(self):
         while self.running:
             clock = pygame.time.Clock()
             clock.tick(self.FPS)
-            if not self.levels[self.current_level].is_game_over:
-                self.levels[self.current_level].update(self.window)
-            else:
-                self.game_over.draw(self.window)
+            self.__draw_relevant_screen()
             self.time.update()
             pygame.display.flip()
             self.check_events()
@@ -44,3 +47,20 @@ class Game:
             if event.type == pygame.QUIT:
                 self.running = False
             self.event_state_service.set_events(events)
+
+    def __draw_relevant_screen(self):
+        if self.player_progress_state_service.get_current_screen() == CurrentScreen.LEVEL:
+            print(self.levels[self.current_level].is_over)
+            if self.levels[self.current_level].is_over:
+                self.__initialize_levels()
+            self.levels[self.current_level].update(self.window)
+        elif self.player_progress_state_service.get_current_screen() == CurrentScreen.GAME_OVER:
+            self.game_over_defeat.draw(self.window)
+        elif self.player_progress_state_service.get_current_screen() == CurrentScreen.WIN:
+            self.game_over_success.draw(self.window)
+
+    def __initialize_levels(self):
+        self.levels.clear()
+        self.levels.append(Level0.Level0())
+
+

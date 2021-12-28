@@ -16,11 +16,12 @@ from EventsStateService import EventStateService
 from TowersStateService import TowersStateService
 from PlayerProgressStateService import PlayerProgressStateService
 from Utility import Tools
+from enums.CurrentScreen import CurrentScreen
 
 
 class Level:
 
-    is_game_over = False
+    is_over: bool = False
     map: list[list[str]]
     map_size: (int, int)
     tiles: [Sprite.Sprite]
@@ -32,9 +33,8 @@ class Level:
     towers: List[Tower.Tower] = []
 
     size_of_tile = None
-    waves = Tools.get_single_wave()
     wave: (str, {str, str})
-    time_start_lvl: float = 0
+    time_start_lvl: float = None
     enemies_type = []
     gui: GUI
 
@@ -48,6 +48,7 @@ class Level:
         self.tiles = tiles
         self.enemies_type = [Enemy0.Enemy0((125, 625)), Enemy1.Enemy1((125, 625)), Enemy2((125, 625)), Enemy3((125, 625))]
         self.gui = GUI.GUI()
+        self.waves = Tools.get_single_wave()
 
     def get_tile(self, point) -> pygame.Surface:
         return self.tiles[point - 1].get_surface()
@@ -62,16 +63,22 @@ class Level:
         return map_list
 
     def update(self, window) -> None:
+        # get wave if there are no enemies.
+        if self.enemies_not_fetched_yet:
+            self.enemies_not_fetched_yet = False
+            self.wave = self.get_wave()
+
+        if self.wave is None:
+            self.on_game_over_success()
+
         self.draw_map(window)
 
         self.gui.update(self.towers)
         self.gui.draw(window)
 
         if self.player_progress_state_service.get_is_wave_ongoing():
-            # get wave if there are no enemies.
-            if self.enemies_not_fetched_yet:
-                self.enemies_not_fetched_yet = False
-                self.wave = self.get_wave()
+            if self.time_start_lvl is None:
+                self.time_start_lvl = time.perf_counter()
 
             # push enemies to list from wave.
             self.update_wave()
@@ -94,7 +101,7 @@ class Level:
                 self.player_progress_state_service.set_is_wave_ongoing(False)
                 self.enemies_not_fetched_yet = True
                 self.player_progress_state_service.set_current_wave_name('Idle')
-
+                self.time_start_lvl = None
 
         for tower in self.towers:
             tower.update(self.enemies)
@@ -103,11 +110,15 @@ class Level:
         self.check_click_events()
 
         if self.player_progress_state_service.get_hp() <= 0:
-            self.game_over()
+            self.on_game_over_defeat()
 
-    def game_over(self):
-        self.is_game_over = True
-        print('game over')
+    def on_game_over_defeat(self):
+        self.player_progress_state_service.set_current_screen(CurrentScreen.GAME_OVER)
+        self.is_over = True
+
+    def on_game_over_success(self):
+        self.player_progress_state_service.set_current_screen(CurrentScreen.WIN)
+        self.is_over = True
 
     def check_click_events(self):
         if self.towers_state_service.get_clicked_structure() is not None:
@@ -153,8 +164,6 @@ class Level:
                 window.blit(self.get_tile(int(self.map[i][j])), (j * self.size_of_tile[0], i * self.size_of_tile[1]))
 
     def get_wave(self) -> {str, str}:
-        print('getting wave')
-        self.time_start_lvl = time.perf_counter()
         for wave, enemies in self.waves:
             self.player_progress_state_service.set_current_wave_name(wave)
             return enemies

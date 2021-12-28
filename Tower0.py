@@ -7,8 +7,8 @@ import Tower
 class Tower0(Tower.Tower):
 
     shot_range = 150
-    bullet_speed = 50
-    cooldown = 0.5
+    bullet_speed = 75
+    cooldown = 0.6
     damage = 5
     last_shot_time = 0
     kills = 0

@@ -4,7 +4,7 @@ import pygame
 
 import Game
 import Sprite
-from UnitVectors import UnitVectors
+from enums.UnitVectors import UnitVectors
 from Utility import Tools
 
 
@@ -23,7 +23,7 @@ class Enemy:
         self.sprite = sprite
 
     def __del__(self):
-        print("dyntka")
+        print("Enemy down")
 
     def get_distance_travelled(self) -> float:
         return self.distance_travelled

@@ -1,4 +1,5 @@
 from Singleton import SingletonMeta
+from enums.CurrentScreen import CurrentScreen
 
 
 class PlayerProgressStateService(metaclass=SingletonMeta):
@@ -7,6 +8,7 @@ class PlayerProgressStateService(metaclass=SingletonMeta):
     __money: int = 50
     __current_wave_name: str = 'Idle'
     __is_wave_ongoing = False
+    __current_screen: CurrentScreen = CurrentScreen.LEVEL
 
     def set_hp(self, hp: int) -> None:
         self.__hp = hp
@@ -40,3 +42,17 @@ class PlayerProgressStateService(metaclass=SingletonMeta):
 
     def get_is_wave_ongoing(self) -> bool:
         return self.__is_wave_ongoing
+
+    def get_current_screen(self) -> CurrentScreen:
+        return self.__current_screen
+
+    def set_current_screen(self, screen: CurrentScreen) -> None:
+        self.__current_screen = screen
+
+    def restart_progress(self):
+        self.__money = 50
+        self.__hp = 100
+        self.__current_screen = CurrentScreen.LEVEL
+        self.__current_wave_name = 'Idle'
+        self.__is_wave_ongoing = False
+

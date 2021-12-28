@@ -1,6 +1,6 @@
 import Enemy
 import Sprite
-from UnitVectors import UnitVectors
+from enums.UnitVectors import UnitVectors
 
 
 class Enemy1(Enemy.Enemy):

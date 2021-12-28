@@ -3,7 +3,7 @@ import pygame
 from Bullet import Bullet
 import Sprite
 import Tower
-from UnitVectors import UnitVectors
+from enums.UnitVectors import UnitVectors
 
 
 class Tower2(Tower.Tower):

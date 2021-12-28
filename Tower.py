@@ -112,7 +112,6 @@ class Tower:
                 enemies[i].health -= self.damage
                 if enemies[i].health <= 0:
                     self.kills += 1
-                print("Trafiony")
                 return True
             i += 1
         return False
