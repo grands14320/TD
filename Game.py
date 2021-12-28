@@ -50,7 +50,6 @@ class Game:
 
     def __draw_relevant_screen(self):
         if self.player_progress_state_service.get_current_screen() == CurrentScreen.LEVEL:
-            print(self.levels[self.current_level].is_over)
             if self.levels[self.current_level].is_over:
                 self.__initialize_levels()
             self.levels[self.current_level].update(self.window)
