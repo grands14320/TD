@@ -3,19 +3,17 @@ from typing import List
 
 import pygame
 
-import Enemy
-import Enemy0
-import Enemy1
-import GUI
-import Sprite
-import Tower
+from Enemies import Enemy, Enemy0, Enemy1
+from gui import Gui
+from utils import Sprite
+from Towers import Tower
 from DetailsStateService import DetailsStateService
-from Enemy2 import Enemy2
-from Enemy3 import Enemy3
+from Enemies.Enemy2 import Enemy2
+from Enemies.Enemy3 import Enemy3
 from EventsStateService import EventStateService
 from TowersStateService import TowersStateService
 from PlayerProgressStateService import PlayerProgressStateService
-from Utility import Tools
+from utils.Utility import Tools
 from enums.CurrentScreen import CurrentScreen
 
 
@@ -36,7 +34,7 @@ class Level:
     wave: (str, {str, str})
     time_start_lvl: float = None
     enemies_type = []
-    gui: GUI
+    gui: Gui
 
     details_state_service = DetailsStateService()
     towers_state_service: TowersStateService = TowersStateService()
@@ -47,7 +45,7 @@ class Level:
         self.map = game_map
         self.tiles = tiles
         self.enemies_type = [Enemy0.Enemy0((125, 625)), Enemy1.Enemy1((125, 625)), Enemy2((125, 625)), Enemy3((125, 625))]
-        self.gui = GUI.GUI()
+        self.gui = Gui.Gui()
         self.waves = Tools.get_single_wave()
 
     def get_tile(self, point) -> pygame.Surface:
@@ -133,7 +131,7 @@ class Level:
                     # check whether click have been made on map
                     if self.is_tile_available_for_structure(tile_x, tile_y):
                         new_tower: Tower = clicked_tower_type((tile_x * self.size_of_tile[0] + 25,
-                                                              tile_y * self.size_of_tile[1] + 25))
+                                                               tile_y * self.size_of_tile[1] + 25))
                         self.towers.append(new_tower)
                         self.player_progress_state_service.subtract_money(new_tower.get_price())
 

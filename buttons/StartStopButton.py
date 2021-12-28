@@ -1,11 +1,8 @@
-from abc import ABC
-
-import Sprite
-import Text
+from utils import Text, Sprite
 from buttons.Button import Button
 
 
-class StartStopButton(Button, ABC):
+class StartStopButton(Button):
 
     position: (int, int)
     size: (int, int) = (75, 25)

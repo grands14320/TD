@@ -1,11 +1,11 @@
-from Singleton import SingletonMeta
+from utils.Singleton import SingletonMeta
 from enums.CurrentScreen import CurrentScreen
 
 
 class PlayerProgressStateService(metaclass=SingletonMeta):
 
     __hp: int = 100
-    __money: int = 50
+    __money: int = 40
     __current_wave_name: str = 'Idle'
     __is_wave_ongoing = False
     __current_screen: CurrentScreen = CurrentScreen.LEVEL
@@ -50,7 +50,7 @@ class PlayerProgressStateService(metaclass=SingletonMeta):
         self.__current_screen = screen
 
     def restart_progress(self):
-        self.__money = 50
+        self.__money = 40
         self.__hp = 100
         self.__current_screen = CurrentScreen.LEVEL
         self.__current_wave_name = 'Idle'

@@ -2,10 +2,14 @@ import Game
 
 
 class Bullet:
-    def __init__(self, bullet_sprite, vector_move, speed):
+    def __init__(self, bullet_sprite, vector_move, speed, effects=None):
+        if effects is None:
+            effects = []
         self.vector_move = vector_move
         self.sprite = bullet_sprite
+        self.sprite.set_transparent_texture("assets/bullet.png")
         self.speed = speed
+        self.effects = effects
 
     def get_sprite(self):
         return self.sprite

@@ -2,14 +2,16 @@ from typing import List
 
 import pygame
 
-import Sprite
-import Tower
+from utils import Sprite
+from Towers import Tower
 from DetailsStateService import DetailsStateService
 from EventsStateService import EventStateService
 from PlayerProgressStateService import PlayerProgressStateService
-from Tower0 import Tower0
-from Tower1 import Tower1
-from Tower2 import Tower2
+from Towers.Tower0 import Tower0
+from Towers.Tower1 import Tower1
+from Towers.Tower2 import Tower2
+from Towers.Tower3 import Tower3
+from Towers.Tower4 import Tower4
 from TowersStateService import TowersStateService
 
 
@@ -24,7 +26,11 @@ class Structures:
         self.position = position
         self.sprite = Sprite.Sprite((200, 200), self.position)
         self.sprite.set_fill_color((232, 121, 111))
-        self.structures = [Tower0((825, 175)), Tower1((875, 175)), Tower2((925, 175))]
+        self.structures = [Tower0((825, 175)),
+                           Tower1((875, 175)),
+                           Tower2((925, 175)),
+                           Tower3((975, 175)),
+                           Tower4((825, 225))]
 
     def get_structures(self) -> List[Tower.Tower]:
         return self.structures

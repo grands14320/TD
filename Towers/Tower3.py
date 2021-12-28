@@ -1,28 +1,30 @@
+# shots 8 bullets at all directions
+
 import pygame
 
+from utils import Sprite
+from Towers.Tower import Tower
 from Bullet import Bullet
-import Sprite
-import Tower
 from enums.UnitVectors import UnitVectors
 
 
-class Tower2(Tower.Tower):
+class Tower3(Tower):
 
     shot_range = 80
     bullet_speed = 50
-    cooldown = 0.5
-    damage = 3
+    cooldown = 0.35
+    damage = 7
     last_shot_time = 0
     kills = 0
     is_rotatable = False
-    texture = "Towers/Tower0.png"
-    price = 25
+    texture = "Towers/assets/Tower3.png"
+    price = 65
 
     def __init__(self, position):
         super().__init__()
         self.position = position
         self.sprite = Sprite.Sprite((50, 50), position)
-        self.sprite.set_transparent_texture("Towers/Tower0.png")
+        self.sprite.set_transparent_texture(self.texture)
         self.circle_range = pygame.Surface((self.shot_range * 2, self.shot_range * 2))
         self.circle_range.set_colorkey((0, 0, 0))
         self.circle_range.set_alpha(100)

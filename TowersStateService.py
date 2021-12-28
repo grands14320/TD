@@ -1,5 +1,5 @@
-import Tower
-from Singleton import SingletonMeta
+from Towers import Tower
+from utils.Singleton import SingletonMeta
 
 
 class TowersStateService(metaclass=SingletonMeta):

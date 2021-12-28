@@ -1,21 +1,23 @@
+# shots 4 bullets at 4 directions at once
+
 import pygame
 
 import Bullet
-import Sprite
-import Tower
+from utils import Sprite
+from Towers.Tower import Tower
 
 
-class Tower1(Tower.Tower):
+class Tower1(Tower):
 
     shot_range = 80
-    bullet_speed = 50
-    cooldown = 0.5
-    damage = 3
+    bullet_speed = 15
+    cooldown = 0.2
+    damage = 3.5
     last_shot_time = 0
     kills = 0
     is_rotatable = False
-    texture = "Towers/Tower0.png"
-    price = 20
+    texture = "Towers/assets/Tower1.png"
+    price = 25
 
     def __init__(self, position):
         super().__init__()

@@ -2,7 +2,7 @@ from typing import List
 
 import pygame.event
 
-from Singleton import SingletonMeta
+from utils.Singleton import SingletonMeta
 
 
 class EventStateService(metaclass=SingletonMeta):

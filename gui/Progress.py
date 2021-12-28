@@ -1,5 +1,4 @@
-import Sprite
-import Text
+from utils import Text, Sprite
 from PlayerProgressStateService import PlayerProgressStateService
 from buttons.StartStopButton import StartStopButton
 

@@ -3,10 +3,10 @@ from typing import List
 
 import pygame
 
-import Enemy
+from Enemies import Enemy
 from Bullet import Bullet
-from Sprite import Sprite
-from Utility import Tools
+from utils.Sprite import Sprite
+from utils.Utility import Tools
 
 
 class Tower:
@@ -97,19 +97,25 @@ class Tower:
             return True
         return False
 
-    def shoot_to_target(self, target):
+    def shoot_to_target(self, target) -> None:
+        vector: (float, float) = self.create_target_vector(target)
+        bullet: Bullet = Bullet(Sprite((10, 10), self.sprite.get_position()), vector, self.bullet_speed)
+        self.bullets.append(bullet)
+
+    def create_target_vector(self, target: Enemy) -> (float, float):
         tower_position = self.sprite.get_position()
         enemy_position = target.get_sprite().get_position()
         vector = (enemy_position[0] - tower_position[0], enemy_position[1] - tower_position[1])
         vector_length = Tools.get_length_point_to_point(tower_position, enemy_position)
         vector = (vector[0] / vector_length, vector[1] / vector_length)
-        self.bullets.append(Bullet(Sprite((10, 10), self.sprite.get_position()), vector, self.bullet_speed))
+        return vector
 
     def enemy_hit(self, bullet, enemies):
         i = 0
         while i < len(enemies):
             if enemies[i].get_sprite().intersect(bullet.get_sprite().get_global_bounds()):
                 enemies[i].health -= self.damage
+                enemies[i].effects = set(bullet.effects)
                 if enemies[i].health <= 0:
                     self.kills += 1
                 return True

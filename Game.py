@@ -1,12 +1,11 @@
 import pygame
 
-import GameOverDefeat
-import GameOverSuccess
+from screens import GameOverSuccess, GameOverDefeat
 import Level0
-import Time
+from utils import Time
 from EventsStateService import EventStateService
 from PlayerProgressStateService import PlayerProgressStateService
-from Utility import Tools
+from utils.Utility import Tools
 from enums.CurrentScreen import CurrentScreen
 
 

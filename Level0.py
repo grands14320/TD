@@ -1,5 +1,5 @@
 import Level
-import Sprite
+from utils import Sprite
 
 
 class Level0(Level.Level):

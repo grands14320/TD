@@ -4,8 +4,8 @@ import pygame
 
 from EventsStateService import EventStateService
 from PlayerProgressStateService import PlayerProgressStateService
-from Sprite import Sprite
-from Text import Text
+from utils.Sprite import Sprite
+from utils.Text import Text
 
 
 class Button(ABC):

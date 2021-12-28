@@ -1,11 +1,9 @@
 import pygame
-import Details
-import Progress
-import Structures
+from gui import Details, Structures, Progress
 from DetailsStateService import DetailsStateService
 
 
-class GUI:
+class Gui:
 
     details_state_service = DetailsStateService()
 

@@ -1,5 +1,4 @@
-import Sprite
-import Text
+from utils import Text, Sprite
 from DetailsStateService import DetailsStateService
 from PlayerProgressStateService import PlayerProgressStateService
 

@@ -1,4 +1,4 @@
-from Text import Text
+from utils.Text import Text
 from buttons.PlayAgainButton import PlayAgainButton
 
 

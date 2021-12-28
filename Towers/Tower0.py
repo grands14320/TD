@@ -1,20 +1,20 @@
 import pygame
 
-import Sprite
-import Tower
+from utils import Sprite
+from Towers.Tower import Tower
 
 
-class Tower0(Tower.Tower):
+class Tower0(Tower):
 
-    shot_range = 150
+    shot_range = 100
     bullet_speed = 75
-    cooldown = 0.6
+    cooldown = 0.42
     damage = 5
     last_shot_time = 0
     kills = 0
     is_rotatable = True
-    texture = "Towers/Tower0.png"
-    price = 15
+    texture = "Towers/assets/Tower0.png"
+    price = 20
 
     def __init__(self, position):
         super().__init__()

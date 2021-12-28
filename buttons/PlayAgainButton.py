@@ -1,5 +1,4 @@
-import Sprite
-import Text
+from utils import Text, Sprite
 from buttons.Button import Button
 from enums.CurrentScreen import CurrentScreen
 

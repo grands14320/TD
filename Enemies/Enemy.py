@@ -1,23 +1,27 @@
+import time
 from typing import List
 
 import pygame
 
 import Game
-import Sprite
+from utils import Sprite
+from effects.BulletEffect import BulletEffect
 from enums.UnitVectors import UnitVectors
-from Utility import Tools
+from utils.Utility import Tools
 
 
 class Enemy:
     distance_travelled: int = 0
     sprite: Sprite.Sprite = None
-    max_health: int
+    base_health: int
     health: int
-    speed: int
+    base_speed: int
+    speed: float
     next_move: UnitVectors
     previous_move: UnitVectors
     gold_dropped: int
     is_rotating: bool
+    effects: set[BulletEffect] = set()
 
     def __init__(self, sprite: Sprite.Sprite):
         self.sprite = sprite
@@ -38,6 +42,8 @@ class Enemy:
         return self.gold_dropped
 
     def move(self, game_map: List[List[int]], map_size: (int, int)) -> None:
+        self.apply_effects()
+
         size_of_tile: (int, int) = Game.Game.levels[Game.Game.current_level].size_of_tile
 
         x: int = int(self.sprite.get_position()[0] / size_of_tile[0])
@@ -84,6 +90,19 @@ class Enemy:
         self.distance_travelled += abs(move_offset[0]) + abs(move_offset[1])
         if self.is_rotating:
             self.sprite.rotate(2)
+
+    def apply_effects(self) -> None:
+        expired_effects: set[BulletEffect] = set()
+        for effect in self.effects:
+            effect.apply_effect(self)
+            time_elapsed: float = (round(time.perf_counter(), 5) - round(effect.applied_at, 5))
+
+            if time_elapsed >= effect.duration:
+                effect.on_effect_expired(self)
+                expired_effects.add(effect)
+
+        for expired_effect in expired_effects:
+            self.effects.discard(expired_effect)
 
     def set_direction(self, game_map: List[List[int]], map_size: (int, int)) -> None:
         size_of_tile = Game.Game.levels[Game.Game.current_level].size_of_tile
@@ -153,7 +172,7 @@ class Enemy:
 
         sprite_size = self.get_sprite().size[0]
 
-        health_bar_width = int((self.health / self.max_health) * sprite_size)
+        health_bar_width = int((self.health / self.base_health) * sprite_size)
 
         pygame.draw.rect(window, (255, 0, 0), (x, y, sprite_size, 10))
         pygame.draw.rect(window, (0, 255, 0), (x, y, health_bar_width, 10))
