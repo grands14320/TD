@@ -1,3 +1,4 @@
+import os
 import time
 from typing import List
 
@@ -51,7 +52,8 @@ class Level:
     def get_tile(self, point) -> pygame.Surface:
         return self.tiles[point - 1].get_surface()
 
-    def get_map(self, current_level) -> list[list[str]]:
+    @staticmethod
+    def get_map(current_level) -> list[list[str]]:
         map_list: list[list[str]] = []
         level = "Levels/" + "Level_" + str(current_level) + "/map"
         with open(level, 'r') as file:
