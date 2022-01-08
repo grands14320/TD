@@ -21,7 +21,7 @@ from enums.CurrentScreen import CurrentScreen
 class Level:
 
     is_over: bool = False
-    map: list[list[str]]
+    map: List[List[str]]
     map_size: (int, int)
     tiles: [Sprite.Sprite]
     enemies_not_fetched_yet: bool = True
@@ -42,7 +42,7 @@ class Level:
     event_state_service: EventStateService = EventStateService()
     player_progress_state_service: PlayerProgressStateService = PlayerProgressStateService()
 
-    def __init__(self, game_map: list[list[str]], tiles: [Sprite.Sprite]):
+    def __init__(self, game_map: List[List[str]], tiles: [Sprite.Sprite]):
         self.map = game_map
         self.tiles = tiles
         self.enemies_type = [Enemy0.Enemy0((125, 625)), Enemy1.Enemy1((125, 625)), Enemy2((125, 625)), Enemy3((125, 625))]
@@ -53,13 +53,16 @@ class Level:
         return self.tiles[point - 1].get_surface()
 
     @staticmethod
-    def get_map(current_level) -> list[list[str]]:
-        map_list: list[list[str]] = []
+    def get_map(current_level) -> List[List[str]]:
+        map_list: List[List[str]] = []
         level = "Levels/" + "Level_" + str(current_level) + "/map"
-        with open(level, 'r') as file:
-            for line in file.readlines():
-                line = line.strip('\n')
-                map_list.append(line.split("  "))
+        try:
+            with open(level, 'r') as file:
+                for line in file.readlines():
+                    line = line.strip('\n')
+                    map_list.append(line.split("  "))
+        except FileNotFoundError:
+            print("Map not found")
         return map_list
 
     def update(self, window) -> None:
