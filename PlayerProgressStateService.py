@@ -3,7 +3,9 @@ from enums.CurrentScreen import CurrentScreen
 
 
 class PlayerProgressStateService(metaclass=SingletonMeta):
-
+    """
+    Holds information about player's current progress
+    """
     __hp: int = 100
     __money: int = 40
     __current_wave_name: str = 'Idle'

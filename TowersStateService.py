@@ -3,6 +3,9 @@ from utils.Singleton import SingletonMeta
 
 
 class TowersStateService(metaclass=SingletonMeta):
+    """
+    Holds information about currently clicked Tower.
+    """
 
     __clicked_structure: Tower.Tower = None
 
