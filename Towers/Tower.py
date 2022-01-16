@@ -80,7 +80,9 @@ class Tower:
             i += 1
 
     def is_in_range(self, enemy):
-
+        """
+        Checks whether given enemy is in tower's range
+        """
         bounds = enemy.get_sprite().get_global_bounds()
 
         # left up corner
@@ -98,11 +100,17 @@ class Tower:
         return False
 
     def shoot_to_target(self, target) -> None:
+        """
+        Creates a bullet
+        """
         vector: (float, float) = self.create_target_vector(target)
         bullet: Bullet = Bullet(Sprite((10, 10), self.sprite.get_position()), vector, self.bullet_speed)
         self.bullets.append(bullet)
 
     def create_target_vector(self, target: Enemy) -> (float, float):
+        """
+        Creates vector to the target
+        """
         tower_position = self.sprite.get_position()
         enemy_position = target.get_sprite().get_position()
         vector = (enemy_position[0] - tower_position[0], enemy_position[1] - tower_position[1])
@@ -111,6 +119,9 @@ class Tower:
         return vector
 
     def enemy_hit(self, bullet, enemies):
+        """
+        Checks if a bullet's tower hit any enemy
+        """
         i = 0
         while i < len(enemies):
             if enemies[i].get_sprite().intersect(bullet.get_sprite().get_global_bounds()):

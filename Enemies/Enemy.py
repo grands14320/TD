@@ -42,6 +42,9 @@ class Enemy:
         return self.gold_dropped
 
     def move(self, game_map: List[List[int]], map_size: (int, int)) -> None:
+        """
+        Moves the enemy object on a gamemap. Enemy can move only on previously defined path.
+        """
         self.apply_effects()
 
         size_of_tile: (int, int) = Game.Game.levels[Game.Game.current_level].size_of_tile
@@ -92,6 +95,9 @@ class Enemy:
             self.sprite.rotate(2)
 
     def apply_effects(self) -> None:
+        """
+        Applies bullet effect
+        """
         expired_effects: set[BulletEffect] = set()
         for effect in self.effects:
             effect.apply_effect(self)
@@ -105,6 +111,9 @@ class Enemy:
             self.effects.discard(expired_effect)
 
     def set_direction(self, game_map: List[List[int]], map_size: (int, int)) -> None:
+        """
+        Sets the direction of enemy.
+        """
         size_of_tile = Game.Game.levels[Game.Game.current_level].size_of_tile
 
         x = int(self.sprite.get_position()[0] / size_of_tile[0])
@@ -134,6 +143,9 @@ class Enemy:
             return
 
     def is_on_center_tile(self, x, y, map_size):
+        """
+        Check whether enemy is on tile center
+        """
         size_of_tile = Game.Game.levels[Game.Game.current_level].size_of_tile
 
         if x - 1 < 0 or x + 1 > map_size[0] or y - 1 < 0 or y + 1 > map_size[1]:
@@ -143,6 +155,9 @@ class Enemy:
                     size_of_tile[1] / 2 != self.sprite.get_position()[1])
 
     def arrived_to_finish(self, finish):
+        """
+        Check whether enemy arrived to map's end
+        """
         size_of_tile = Game.Game.levels[Game.Game.current_level].size_of_tile
 
         sprite_index_x = int(self.sprite.get_position()[0] / size_of_tile[0])
@@ -154,6 +169,9 @@ class Enemy:
         return sprite_index_x == finish_index_x and sprite_index_y == finish_index_y
 
     def tile_is_behind(self, position_of_tile):
+        """
+        check whether given tile is behind enemy
+        """
         if position_of_tile[1] > self.sprite.get_position()[1] and self.next_move == UnitVectors.UP:
             return True
         if position_of_tile[1] < self.sprite.get_position()[1] and self.next_move == UnitVectors.DOWN:
@@ -165,6 +183,9 @@ class Enemy:
         return False
 
     def health_bar(self, window):
+        """
+        draws enemy's health bar
+        """
         position = self.sprite.get_global_bounds()
 
         x = position[0]

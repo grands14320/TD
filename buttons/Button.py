@@ -43,4 +43,7 @@ class Button(ABC):
 
     @abstractmethod
     def react(self):
+        """
+        Should contain logic which will be executed when the button is clicked.
+        """
         raise NotImplementedError()

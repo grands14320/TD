@@ -2,6 +2,10 @@ import Game
 
 
 class Bullet:
+    """
+    Class representing bullet object.
+    """
+
     def __init__(self, bullet_sprite, vector_move, speed, effects=None):
         if effects is None:
             effects = []
@@ -15,6 +19,9 @@ class Bullet:
         return self.sprite
 
     def update(self):
+        """
+        Moves the bullet.
+        """
         self.sprite.move((self.vector_move[0] * self.speed * Game.Game.time.deltaTime,
                           self.vector_move[1] * self.speed * Game.Game.time.deltaTime))
 

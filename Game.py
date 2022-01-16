@@ -31,6 +31,9 @@ class Game:
         self.game_over_success: GameOverSuccess.GameOver = GameOverSuccess.GameOver()
 
     def run(self):
+        """
+        Runs main game loop
+        """
         while self.running:
             clock = pygame.time.Clock()
             clock.tick(self.FPS)
@@ -41,6 +44,9 @@ class Game:
         pygame.quit()
 
     def check_events(self):
+        """
+        Listens for game events such as clicks
+        """
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
@@ -48,6 +54,9 @@ class Game:
             self.event_state_service.set_events(events)
 
     def __draw_relevant_screen(self):
+        """
+        Draws appropaite screen
+        """
         if self.player_progress_state_service.get_current_screen() == CurrentScreen.LEVEL:
             if self.levels[self.current_level].is_over:
                 self.__initialize_levels()

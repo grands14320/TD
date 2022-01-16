@@ -12,9 +12,15 @@ class FreezingBulletEffect(BulletEffect):
         self.slow_ratio = 0.4
 
     def on_effect_expired(self, enemy):
+        """
+        Sets the enemy base speed as his current speed.
+        """
         enemy.speed = enemy.base_speed
 
     def apply_effect(self, enemy: Enemy.Enemy):
+        """
+        slows down the enemy if the same effect wasn't previously applied
+        """
         if self.applied_at is not None:
             return
         self.is_already_applied = True

@@ -19,6 +19,9 @@ from enums.CurrentScreen import CurrentScreen
 
 
 class Level:
+    """
+    Manages & updates all sprites that are being drawn on current level.
+    """
 
     is_over: bool = False
     map: List[List[str]]
@@ -54,6 +57,9 @@ class Level:
 
     @staticmethod
     def get_map(current_level) -> List[List[str]]:
+        """
+        Gets the level map from file
+        """
         map_list: List[List[str]] = []
         level = "Levels/" + "Level_" + str(current_level) + "/map"
         try:
@@ -66,6 +72,9 @@ class Level:
         return map_list
 
     def update(self, window) -> None:
+        """
+        Updates level entities.
+        """
         # get wave if there are no enemies.
         if self.enemies_not_fetched_yet:
             self.enemies_not_fetched_yet = False
@@ -116,14 +125,24 @@ class Level:
             self.on_game_over_defeat()
 
     def on_game_over_defeat(self):
+        """
+        sets correct screen when user has lost the game
+        """
         self.player_progress_state_service.set_current_screen(CurrentScreen.GAME_OVER)
         self.is_over = True
 
     def on_game_over_success(self):
+        """
+        Sets correct screen when user has won the game
+        """
         self.player_progress_state_service.set_current_screen(CurrentScreen.WIN)
         self.is_over = True
 
     def check_click_events(self):
+        """
+        Looks for click events contained in service and checks whether click has been made on a map and if it was a left
+        mouse button click
+        """
         if self.towers_state_service.get_clicked_structure() is not None:
             for event in self.event_state_service.get_events():
                 # check left mouse button click
@@ -146,6 +165,9 @@ class Level:
                     self.towers_state_service.set_clicked_structure(None)
 
     def is_tile_available_for_structure(self, tile_x, tile_y) -> bool:
+        """
+        Check whether player can build structure on given tile
+        """
         if tile_x > self.map_size[0] or tile_y > self.map_size[1]:
             return False
 
@@ -162,16 +184,25 @@ class Level:
         return False
 
     def draw_map(self, window) -> None:
+        """
+        Draws the map
+        """
         for i in range(len(self.map)):
             for j in range(len(self.map[i])):
                 window.blit(self.get_tile(int(self.map[i][j])), (j * self.size_of_tile[0], i * self.size_of_tile[1]))
 
     def get_wave(self) -> {str, str}:
+        """
+        Gets wave and sets current wave name into service so player can see it.
+        """
         for wave, enemies in self.waves:
             self.player_progress_state_service.set_current_wave_name(wave)
             return enemies
 
     def update_wave(self) -> None:
+        """
+        Spawns the enemies in appropaite order using data from wave
+        """
         i = 0
         while i < len(self.wave.items()):
             spawn_time = list(self.wave.items())[i][0]

@@ -3,6 +3,10 @@ from utils import Sprite
 
 
 class Level0(Level.Level):
+    """
+    Initializes Level with correct data
+    """
+
     def __init__(self):
         self.size_of_tile = (50, 50)
         self.enemy_start_position: (int, int) = (125, 625)
